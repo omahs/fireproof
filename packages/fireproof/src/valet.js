@@ -10,6 +10,7 @@ import cargoQueue from 'async/cargoQueue.js'
 // } catch (e) {}
 // const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
+// todo create an encrypted valet
 export default class Valet {
   #cars = new Map() // cars by cid
   #cidToCar = new Map() // cid to car

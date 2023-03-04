@@ -28,17 +28,12 @@
 .Login form button {
   margin: 0 5px;
 }
-.app-header .app-title {
-  margin-top: 12px;
-  margin-left: 16px
-}
+
 .app-header .app-logo {
   height:77px;
   margin-top:-8px
 }
-.app-left-nav {
-  margin: 30px;
-}
+
 .listNav {
   /* background: linear-gradient(45deg, #000000, #ffa700); */
 
@@ -49,7 +44,7 @@
 .listNav {
 	background: linear-gradient(-45deg, #000000, #ff6f00, #ffa000, #000, #ff8200);
 	background-size: 400% 400%;
-	animation: gradient 30s ease infinite;
+	/* animation: gradient 30s ease infinite; */
 }
 
 @keyframes gradient {

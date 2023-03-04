@@ -45,17 +45,176 @@ const LoadingView = (): JSX.Element => {
         </section>
         <InputArea placeholder="Create a new list or choose one" />
       </div>
-    </Layout>
+      <section className='main'>
+        <ul className='todo-list'>
+          {lists.map(({ title, _id }, i) => {
+            if (_id === '') {
+              return (
+                <li key={_id || i}>
+                  <label>
+                    &nbsp;
+                  </label>
+                </li>
+              )
+            } else {
+              return (
+                <li key={_id || i}>
+                  <label>
+                    <Link to={`/list/${_id}`}>{title}</Link>
+                  </label>
+                </li>
+              )
+            }
+
+          })}
+        </ul>
+      </section>
+      <InputArea
+      autoFocus = {false}
+        onSubmit={onSubmit}
+        placeholder='Create a new list or choose one'
+      />
+      
+
+    </div>
   )
 }
 
-/**
- * A React functional component that wraps around <List/> and <AllLists/>.
- *
- * @returns {JSX.Element}
- *   A React element representing the rendered list.
- */
-function Layout({ children }: LayoutProps): JSX.Element {
+interface Doc {
+  _id: string
+}
+
+interface TodoDoc extends Doc {
+  completed: boolean
+  title: string
+  listId: string
+  type: "todo"
+}
+interface ListDoc extends Doc {
+  title: string
+  type: "list"
+}
+
+
+interface AppState {
+  list: ListDoc,
+  todos: TodoDoc[],
+  err: Error | null
+}
+
+function List() {
+  const {
+    addTodo,
+    toggle,
+    destroy,
+    clearCompleted,
+    updateTitle, database, addSubscriber
+  } = useContext(FireproofCtx)
+  let { list, todos } = useLoaderData() as ListLoaderData;
+
+  const revalidator = useRevalidator()
+  addSubscriber('one List', () => {
+    revalidator.revalidate();
+  })
+
+  const pathFlag = 'all'
+  const uri = window.location.pathname
+  const filteredTodos = {
+    all: todos,
+    active: todos.filter((todo) => !todo.completed),
+    completed: todos.filter((todo) => todo.completed)
+  }
+  const shownTodos = filteredTodos[pathFlag]
+
+
+  const [editing, setEditing] = useState("")
+  const navigate = useNavigate()
+  const edit = (todo: TodoDoc) => () => setEditing(todo._id)
+  const onClearCompleted = async () => await clearCompleted(list._id)
+
+
+
+  return (
+    <div>
+      <div className='listNav'>
+        <button onClick={() => navigate('/')}>Back to all lists</button>
+        <label>{list.title}</label>
+      </div>
+      <ul className='todo-list'>
+        {shownTodos.map((todo) => {
+          const handle = (fn: (arg0: TodoDoc, arg1: string) => any) => (val: string) => fn(todo, val)
+          return (
+            <TodoItem
+              key={todo._id}
+              todo={todo}
+              onToggle={handle(toggle)}
+              onDestroy={handle(destroy)}
+              onSave={handle(updateTitle)}
+              onEdit={edit(todo)}
+              editing={editing === todo._id}
+              onCancel={console.log}
+            />
+          )
+        })}
+      </ul>
+      <InputArea
+            autoFocus = {false}
+        onSubmit={async (title: string) =>
+          await addTodo(list._id, title)
+        }
+        placeholder='Add a new item to your list.'
+
+      />
+
+      <Footer
+        count={shownTodos.length}
+        completedCount={
+          filteredTodos['completed'].length
+        }
+        onClearCompleted={onClearCompleted}
+        nowShowing={pathFlag}
+        uri={uri && uri.split('/').slice(0, 3).join('/')}
+      />
+      
+    </div>
+  )
+}
+
+
+const shortLink = l => `${String(l).slice(0, 4)}..${String(l).slice(-4)}`
+const clockLog = new Set<string>()
+
+const TimeTravel = ({ database }) => {
+  database.clock && database.clock.length && clockLog.add(database.clock.toString())
+  const diplayClocklog = Array.from(clockLog).reverse()
+  return (<div className='timeTravel'>
+    <h2>Time Travel</h2>
+    {/* <p>Copy and paste a <b>Fireproof clock value</b> to your friend to share application state, seperate them with commas to merge state.</p> */}
+    {/* <InputArea
+      onSubmit={
+        async (tex: string) => {
+          await database.setClock(tex.split(','))
+        }
+      }
+      placeholder='Copy a CID from below to rollback in time.'
+      autoFocus={false}
+    /> */}
+    <p>Click a <b>Fireproof clock value</b> below to rollback in time.</p>
+    <p>Clock log (newest first): </p>
+    <ol type={"1"}>
+      {diplayClocklog.map((entry) => (
+        <li key={entry}>
+          <button onClick={async () => {
+            await database.setClock([entry])
+          }} >{shortLink(entry)}</button>
+        </li>
+      ))}
+    </ol>
+  </div>)
+}
+
+const NotFound = () => {
+  console.log('fixme: rendering missing route screen')
   return (
     <>
       <AppHeader />

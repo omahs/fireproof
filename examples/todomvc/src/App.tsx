@@ -70,11 +70,11 @@ const LoadingView = (): JSX.Element => {
         </ul>
       </section>
       <InputArea
-      autoFocus = {false}
+        autoFocus={false}
         onSubmit={onSubmit}
         placeholder='Create a new list or choose one'
       />
-      
+
 
     </div>
   )
@@ -158,7 +158,7 @@ function List() {
         })}
       </ul>
       <InputArea
-            autoFocus = {false}
+        autoFocus={false}
         onSubmit={async (title: string) =>
           await addTodo(list._id, title)
         }
@@ -175,7 +175,7 @@ function List() {
         nowShowing={pathFlag}
         uri={uri && uri.split('/').slice(0, 3).join('/')}
       />
-      
+
     </div>
   )
 }
@@ -233,7 +233,7 @@ const NotFound = () => {
               </ul>
             </section>
             <InputArea
-            autoFocus = {false}
+              autoFocus={false}
               placeholder='Create a new list or choose one'
             />
           </div>

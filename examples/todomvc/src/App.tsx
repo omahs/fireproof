@@ -219,7 +219,25 @@ const NotFound = () => {
     <>
       <AppHeader />
       <div>
-        <header className="header">{children ? <>{children}</> : <Outlet />}</header>
+        <header className='header'>
+          <div>
+            <div className='listNav'>
+              <button>Choose a list.</button>
+              <label></label>
+            </div>
+            <section className='main'>
+              <ul className='todo-list'>
+                <li><label>&nbsp;</label></li>
+                <li><label>&nbsp;</label></li>
+                <li><label>&nbsp;</label></li>
+              </ul>
+            </section>
+            <InputArea
+            autoFocus = {false}
+              placeholder='Create a new list or choose one'
+            />
+          </div>
+        </header>
       </div>
     </>
   )

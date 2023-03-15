@@ -26,7 +26,23 @@ const arrayCompare = (a, b) => {
   }
 }
 
-const opts = { cache, chunker: bf(3), codec, hasher, compare: arrayCompare }
+const compare = (a, b) => {
+  const [aKey, aRef] = a
+  const [bKey, bRef] = b
+  const comp = simpleCompare(aKey, bKey)
+  if (comp !== 0) return comp
+  return refCompare(aRef, bRef)
+}
+
+const refCompare = (aRef, bRef) => {
+  if (Number.isNaN(aRef)) return -1
+  if (Number.isNaN(bRef)) throw new Error('ref may not be Infinity or NaN')
+  if (!Number.isFinite(aRef)) return 1
+  // if (!Number.isFinite(bRef)) throw new Error('ref may not be Infinity or NaN')
+  return simpleCompare(aRef, bRef)
+}
+
+const opts = { cache, chunker: bf(3), codec, hasher, compare }
 
 const makeDoc = ({ key, value }) => ({ _id: key, ...value })
 
@@ -134,7 +150,10 @@ export default class DbIndex {
     return {
       proof: { index: await cidsToProof(response.cids) },
       // TODO fix this naming upstream in prolly/db-DbIndex?
-      rows: response.result.map(({ id, key, row }) => ({ id: key, key: charwise.decode(id), value: row }))
+      rows: response.result.map(({ id, key, row }) => {
+        console.log('query', id, key, row)
+        return ({ id: key, key: charwise.decode(id), value: row })
+      })
     }
   }
 
@@ -235,6 +254,7 @@ async function doIndexQuery (blocks, dbIndexRoot, dbIndex, query) {
     return dbIndex.range(...encodedRange)
   } else if (query.key) {
     const encodedKey = charwise.encode(query.key)
+    console.log('getting key', encodedKey)
     return dbIndex.get(encodedKey)
   }
 }

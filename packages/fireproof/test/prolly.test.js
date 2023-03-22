@@ -173,7 +173,7 @@ class TestPail {
   /** @param {string} key */
   async get (key) {
     const resp = await get(this.blocks, this.head, key)
-    console.log('prolly GET', key, resp)
+    // console.log('prolly GET', key, resp)
     return resp.result
   }
 

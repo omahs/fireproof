@@ -151,8 +151,8 @@ export default class DbIndex {
       proof: { index: await cidsToProof(response.cids) },
       // TODO fix this naming upstream in prolly/db-DbIndex?
       rows: response.result.map(({ id, key, row }) => {
-        console.log('query', id, key, row)
-        return ({ id: key, key: charwise.decode(id), value: row })
+        // console.log('query', id, key, row)
+        return ({ id, key: charwise.decode(key), value: row })
       })
     }
   }

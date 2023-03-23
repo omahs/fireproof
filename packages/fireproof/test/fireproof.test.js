@@ -2,6 +2,7 @@ import { describe, it, beforeEach } from 'mocha'
 import assert from 'node:assert'
 import Blockstore from '../src/blockstore.js'
 import Fireproof from '../src/fireproof.js'
+import * as codec from '@ipld/dag-cbor'
 
 let database, resp0
 
@@ -308,26 +309,44 @@ describe('Fireproof', () => {
     assert.equal(res9.rows.length, 0)
   })
 
-  it.skip('docs since repeated changes', async () => {
+  it('docs since repeated changes', async () => {
     assert.equal((await database.changesSince()).rows.length, 1)
     let resp, doc, changes
     for (let index = 0; index < 200; index++) {
-      const id = '' + (300 - index).toString()
+      const id = '1' + (300 - index).toString()
+      console.log(`Processing id: ${id}, index: ${index}`)
       resp = await database.put({ index, _id: id }).catch(e => {
-        assert.equal(e.message, 'put failed on  _id: ' + id)
+        assert.fail(`put failed on _id: ${id}, error: ${e.message}`)
       })
-      assert(resp.id)
+      assert(resp.id, `Failed to obtain resp.id for _id: ${id}`)
       doc = await database.get(resp.id).catch(e => {
         console.trace('failed', e)
-        assert.equal(e.message, 'get failed on _id: ' + id)
+        assert.fail(`get failed on _id: ${id}, error: ${e.message}`)
       })
-      assert.equal(doc.index, index)
-      changes = await database.changesSince().catch(e => {
-        assert.equal(e.message, 'changesSince failed on  _id: ' + id)
+      assert.equal(doc.index, index, `doc.index is not equal to index for _id: ${id}`)
+      changes = await database.changesSince().catch(async e => {
+        assert.fail(`changesSince failed on _id: ${id}, error: ${e.message}`)
       })
-      assert.equal(changes.rows.length, index + 2)
+      console.log('changes ' + index, JSON.stringify(changes.rows))
+      changes.rows.forEach(row => {
+        for (const key in row) {
+          const value = row[key]
+          assert(!/^bafy/.test(value), `Unexpected "bafy..." value found at index ${index} in row with key ${key}: ${value}`)
+        }
+      })
+      if (index > 3) {
+        const stored = await database.blocks.get('bafyreicumn7tvssch4xslbe4jjq55c6w3jt4yxyjagkr2tengsudato7vi').catch((e) => {
+          console.log(`Error getting block for index ${index}: ${e.message}`)
+        })
+        if (stored) {
+          const dec = codec.decode(await stored.bytes)
+          console.log('stored', JSON.stringify(dec))
+        }
+      }
+      assert.equal(changes.rows.length, index + 2, `failed on ${index}, with ${changes.rows.length} ${id}`)
     }
   }).timeout(20000)
+
   it('concurrent transactions', async () => {
     assert.equal((await database.changesSince()).rows.length, 1)
     const promises = []

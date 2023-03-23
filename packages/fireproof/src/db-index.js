@@ -11,20 +11,20 @@ import charwise from 'charwise'
 
 const ALWAYS_REBUILD = true // todo: remove this
 
-const arrayCompare = (a, b) => {
-  if (Array.isArray(a) && Array.isArray(b)) {
-    const len = Math.min(a.length, b.length)
-    for (let i = 0; i < len; i++) {
-      const comp = simpleCompare(a[i], b[i])
-      if (comp !== 0) {
-        return comp
-      }
-    }
-    return simpleCompare(a.length, b.length)
-  } else {
-    return simpleCompare(a, b)
-  }
-}
+// const arrayCompare = (a, b) => {
+//   if (Array.isArray(a) && Array.isArray(b)) {
+//     const len = Math.min(a.length, b.length)
+//     for (let i = 0; i < len; i++) {
+//       const comp = simpleCompare(a[i], b[i])
+//       if (comp !== 0) {
+//         return comp
+//       }
+//     }
+//     return simpleCompare(a.length, b.length)
+//   } else {
+//     return simpleCompare(a, b)
+//   }
+// }
 
 const compare = (a, b) => {
   const [aKey, aRef] = a

@@ -27,7 +27,7 @@ const LoadingView = (): JSX.Element => {
     <Layout>
       <div>
         <div className="listNav">
-        <button>Choose a list.</button>
+          <button>Choose a list.</button>
           <label></label>
         </div>
         <section className="main">
@@ -43,7 +43,7 @@ const LoadingView = (): JSX.Element => {
             </li>
           </ul>
         </section>
-        <InputArea placeholder="Create a new list or choose one" />
+        <InputArea autoFocus={false} placeholder="Create a new list or choose one" />
       </div>
     </Layout>
   )
@@ -71,7 +71,7 @@ declare global {
     fireproof: Fireproof
   }
 }
-const defineIndexes = (database) => {
+const defineIndexes = database => {
   database.allLists = new Index(database, function (doc, map) {
     if (doc.type === 'list') map(doc.type, doc)
   })

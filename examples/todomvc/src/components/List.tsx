@@ -69,7 +69,7 @@ export function List(): JSX.Element {
           )
         })}
       </ul>
-      <InputArea onSubmit={onSubmit} placeholder="Add a new item to your list." />
+      <InputArea autoFocus={false} onSubmit={onSubmit} placeholder="Add a new item to your list." />
       <Footer
         count={shownTodos.length}
         completedCount={filteredTodos['completed'].length}

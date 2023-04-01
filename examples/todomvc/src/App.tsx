@@ -3,11 +3,9 @@ import './App.css'
 import { Route, Outlet, RouterProvider, createBrowserRouter, createRoutesFromElements } from 'react-router-dom'
 import type { LoaderFunctionArgs } from 'react-router-dom'
 import { LayoutProps, ListLoaderData, ListDoc } from './interfaces'
-import { KeyringProvider } from '@w3ui/react-keyring'
 
 import { Index, Fireproof } from '@fireproof/core'
 import { FireproofCtx, useFireproof } from '@fireproof/core/hooks/use-fireproof'
-import { useUploader, UploaderCtx } from './hooks/useUploader'
 import { makeQueryFunctions } from './makeQueryFunctions'
 import loadFixtures from './loadFixtures'
 
@@ -92,7 +90,6 @@ function App(): JSX.Element {
   console.log('render App')
   const fp = useFireproof(defineIndexes, loadFixtures)
   const { fetchListWithTodos, fetchAllLists } = makeQueryFunctions(fp)
-  const up = useUploader(fp.database) // is required to be in a KeyringProvider
   const listLoader = async ({ params: { listId } }: LoaderFunctionArgs): Promise<ListLoaderData> =>
     await fetchListWithTodos(listId)
   const allListLoader = async ({ params }: LoaderFunctionArgs): Promise<ListDoc[]> => await fetchAllLists()
@@ -112,14 +109,10 @@ function App(): JSX.Element {
   const pageBase = document.location.pathname.split('/list')[0] || ''
   return (
     <FireproofCtx.Provider value={fp}>
-      <KeyringProvider>
-        <UploaderCtx.Provider value={up}>
-          <RouterProvider
-            router={createBrowserRouter(createRoutesFromElements(defineRouter()), { basename: pageBase })}
-            fallbackElement={<LoadingView />}
-          />
-        </UploaderCtx.Provider>
-      </KeyringProvider>
+      <RouterProvider
+        router={createBrowserRouter(createRoutesFromElements(defineRouter()), { basename: pageBase })}
+        fallbackElement={<LoadingView />}
+      />
     </FireproofCtx.Provider>
   )
 }

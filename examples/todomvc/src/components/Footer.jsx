@@ -4,15 +4,15 @@ import classNames from 'classnames'
 
 function TodoFooter ({ count, completedCount, onClearCompleted, nowShowing }) {
   const activeTodoWord = count > 1 ? 'items' : 'item'
-  let clearButton = null
+  const clearButton = null
 
-  if (completedCount > 0) {
-    clearButton = (
-      <button className='clear-completed' onClick={onClearCompleted}>
-        Clear completed
-      </button>
-    )
-  }
+  // if (completedCount > 0) {
+  //   clearButton = (
+  //     <button className='clear-completed' onClick={onClearCompleted}>
+  //       Clear completed
+  //     </button>
+  //   )
+  // }
 
   return (
     <footer className='footer'>

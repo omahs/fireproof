@@ -4,16 +4,15 @@
   margin-right: 40px;
 }
 .app-title-wrapper {
-  display: flex;
   align-items: center;
   justify-content: space-between;
+  text-align: center;
 }
 .app-title-text {
   flex-grow: 1;
 }
 .app-header {
   background-color: #222;
-  height: 105px;
   padding: 20px;
   color: white;
   /* padding-left: 60px; */
@@ -24,8 +23,6 @@
 .app-title {
   /* font-size: 32px; */
   line-height: 2rem;
-  margin: 0px;
-  margin-top: 10px;
 }
 .app-intro {
   font-size: large;

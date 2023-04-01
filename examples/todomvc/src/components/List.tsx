@@ -76,10 +76,6 @@ export function List(): JSX.Element {
         onClearCompleted={onClearCompleted}
         nowShowing={nowShowing}
       />
-      <div className="dbInfo">
-        <TimeTravel database={database} />
-        <UploadManager registered={registered} />
-      </div>
     </div>
   )
 }

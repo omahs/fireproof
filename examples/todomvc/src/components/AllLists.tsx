@@ -73,10 +73,6 @@ export function AllLists(): JSX.Element {
       </div>
       <ul className="todo-list">{lists.map(todoItems)}</ul>
       <InputArea autoFocus={false} onSubmit={addList} placeholder="Create a new list or choose one" />
-      <div className="dbInfo">
-        <TimeTravel database={database} />
-        <UploadManager registered={registered} />
-      </div>
     </div>
   )
 }

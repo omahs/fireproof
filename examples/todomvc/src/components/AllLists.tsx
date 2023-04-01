@@ -3,9 +3,6 @@ import { useContext } from 'react'
 import { Link, useLoaderData, useRevalidator } from 'react-router-dom'
 import InputArea from './InputArea'
 import { FireproofCtx, FireproofCtxValue } from '@fireproof/core/hooks/use-fireproof'
-import { TimeTravel } from './TimeTravel'
-import { UploadManager } from '../hooks/useUploader'
-import { useKeyring } from '@w3ui/react-keyring'
 import { ListDoc } from '../interfaces'
 import { makeQueryFunctions } from '../makeQueryFunctions'
 
@@ -54,11 +51,7 @@ export function AllLists(): JSX.Element {
   if (lists.length == 0) {
     lists = threeEmptyLists
   }
-  // now upload stuff
-  // const { registered } = useContext(UploaderCtx)
-  // const { registered } = useContext(UploaderCtx)
-  const [{ agent, space }, { getProofs, loadAgent }] = useKeyring()
-  const registered = Boolean(space?.registered())
+  console.log('revalidator', lists.length, revalidator)
   return (
     <div>
       <div className="listNav">
